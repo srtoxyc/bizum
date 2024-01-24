@@ -6,13 +6,10 @@ package org.toxyc.bizum.model.database;
  * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
  */
 public class DBDAOFactory {
-    public final static int MODE_TEST   = 0;
-    public final static int MODE_MYSQL  = 1;
+    public final static int MODE_MYSQL = 0;
 
     public static DBDAO getDAO(int mode) {
         switch (mode) {
-            case MODE_TEST:
-                return new TestDAO();
             case MODE_MYSQL:
                 return new MySQLDAO();
             default:

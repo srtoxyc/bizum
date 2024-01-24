@@ -1,5 +1,4 @@
 package org.toxyc.bizum.model.util;
-import java.util.Arrays;
 
 /**
  * Convierte un array de bytes a una cadena hexadecimal y viceversa.

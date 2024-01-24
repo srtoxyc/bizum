@@ -15,20 +15,19 @@ import org.toxyc.bizum.model.util.Cipher;
 
 /**
  * Objeto de acceso a datos de la base de datos MySQL.
- * 
  * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
  */
 public class MySQLDAO implements DBDAO {
-    private final static String DB_URL = "jdbc:mysql://localhost:3306/bizum?";
-    private final static String DB_USER = "root";
-    private final static String DB_PASSWORD = "";
-    private final static String DB_DRIVER = "com.mysql.cj.jdbc.Driver";
+    private final static String DB_URL          = "jdbc:mysql://localhost:3306/bizum?";
+    private final static String DB_USER         = "root";
+    private final static String DB_PASSWORD     = "";
+    private final static String DB_DRIVER       = "com.mysql.cj.jdbc.Driver";
 
-    private Connection conn = null;
+    private Connection conn                     = null;
 
     private void connect() {
-        final String MSG_CLASS_ERROR = "Error al cargar el driver de MySQL";
-        final String MSG_SQL_ERROR = "Error al conectar con la base de datos";
+        final String MSG_CLASS_ERROR            = "Error al cargar el driver de MySQL";
+        final String MSG_SQL_ERROR              = "Error al conectar con la base de datos";
 
         try {
             Class.forName(DB_DRIVER);
@@ -125,7 +124,7 @@ public class MySQLDAO implements DBDAO {
      * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
      */
     private User getUser(String username) throws Exception {
-        final String QUERY_USER = "SELECT username, email, password, salt FROM User WHERE username = \"" + username + "\"";
+        final String QUERY_USER = String.format("SELECT username, email, password, salt FROM User WHERE username = \"%s\"", username);
 
         try {
             ResultSet rs = this.executeQuery(QUERY_USER);
@@ -153,7 +152,7 @@ public class MySQLDAO implements DBDAO {
      * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
      */
     private User getUser(Email email) throws Exception {
-        final String QUERY_USER = "SELECT username, email, password, salt FROM User WHERE email = \"" + email + "\"";
+        final String QUERY_USER = String.format("SELECT username, email, password, salt FROM User WHERE email = \"%s\"", email);
 
         try {
             ResultSet rs = this.executeQuery(QUERY_USER);
@@ -236,9 +235,9 @@ public class MySQLDAO implements DBDAO {
 
     @Override
     public ServerState updateUserUsername(String username, String newUsername, String pass) {
-        final String QUERY_UPDATE_USERNAME = "UPDATE User SET username = \"" + newUsername + "\" WHERE username = \"" + username + "\"";
-
         this.connect();
+
+        final String QUERY_UPDATE_USERNAME = String.format("UPDATE User SET username = \"%s\" WHERE username = \"%s\"", newUsername, username);
 
         if (this.checkLogin(username, pass)) {
             try {
@@ -258,8 +257,9 @@ public class MySQLDAO implements DBDAO {
     @Override
     public ServerState updateUserPassword(String username, String oldPass, String newPass) throws Exception {
         this.connect();
+
         User tempUser = this.getUser(username);
-        final String QUERY_UPDATE_PASSWORD = "UPDATE User SET password = \"" + ByteHexConverter.bytesToHex(Cipher.hashPassword(newPass, tempUser.getSalt())) + "\" WHERE username = \"" + username + "\"";
+        final String QUERY_UPDATE_PASSWORD = String.format("UPDATE User SET password = \"%s\" WHERE username = \"%s\"", ByteHexConverter.bytesToHex(Cipher.hashPassword(newPass, tempUser.getSalt())), username);
         
         if (this.checkLogin(username, oldPass)) {
             try {
@@ -278,11 +278,11 @@ public class MySQLDAO implements DBDAO {
 
     @Override
     public ServerState updateUserPasswordForgotten(User user, String newPass) throws Exception {
-        User tempUser = this.getUser(user.getUsername());
-        final String QUERY_UPDATE_PASSWORD_FORGOTTEN = "UPDATE User SET password = \"" + ByteHexConverter.bytesToHex(Cipher.hashPassword(newPass, tempUser.getSalt())) + "\" WHERE username = \"" + user.getUsername() + "\" AND email = \"" + user.getEmail().toString() + "\"";
-        
         this.connect();
 
+        User tempUser = this.getUser(user.getUsername());
+        final String QUERY_UPDATE_PASSWORD_FORGOTTEN = String.format("UPDATE User SET password = \"%s\" WHERE username = \"%s\" AND email = \"%s\"", ByteHexConverter.bytesToHex(Cipher.hashPassword(newPass, tempUser.getSalt())), user.getUsername(), user.getEmail().toString());
+        
         PreparedStatement ps = conn.prepareStatement(QUERY_UPDATE_PASSWORD_FORGOTTEN);
 
         try {
@@ -303,7 +303,8 @@ public class MySQLDAO implements DBDAO {
     @Override
     public ServerState updateUserEmail(User user, String pass) {
         this.connect();
-        final String QUERY_UPDATE_EMAIL = "UPDATE User SET email = \"" + user.getEmail() + "\" WHERE username = \"" + user.getUsername() + "\"";
+
+        final String QUERY_UPDATE_EMAIL = String.format("UPDATE User SET email = \"%s\" WHERE username = \"%s\"", user.getEmail().toString(), user.getUsername());
 
         if (this.checkLogin(user.getUsername(), pass)) {
             try {

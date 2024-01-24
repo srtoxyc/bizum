@@ -6,8 +6,16 @@ import org.toxyc.bizum.model.entities.Email;
 import org.toxyc.bizum.model.entities.ServerState;
 import org.toxyc.bizum.model.entities.User;
 
+/**
+ * Objeto controlador de la aplicación.
+ * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
+ */
 public class AppController implements Controller {
-    private DBDAO dbDAO = DBDAOFactory.getDAO(DBDAOFactory.MODE_MYSQL);
+    private DBDAO dbDAO = null;
+
+    public AppController() {
+        this.dbDAO = DBDAOFactory.getDAO(DBDAOFactory.MODE_MYSQL);
+    }
 
     @Override
     public Boolean checkLogin(String username, String pass) {

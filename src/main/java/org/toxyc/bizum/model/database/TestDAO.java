@@ -50,5 +50,4 @@ public class TestDAO implements DBDAO {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'updateUserEmail'");
     }
-
 }

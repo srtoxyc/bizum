@@ -14,7 +14,8 @@ public class AppController implements Controller {
         try {
             return dbDAO.checkLogin(username, pass);
         } catch (Exception e) {
-            throw e;
+            e.printStackTrace();
+            return false;
         }
     }
 
@@ -23,7 +24,8 @@ public class AppController implements Controller {
         try {
             return dbDAO.checkLogin(email, pass);
         } catch (Exception e) {
-            throw e;
+            e.printStackTrace();
+            return false;
         }
     }
 
@@ -32,7 +34,8 @@ public class AppController implements Controller {
         try {
             return dbDAO.signUp(user, pass);
         } catch (Exception e) {
-            throw e;
+            e.printStackTrace();
+            return ServerState.DATABASE_ERROR;
         }
     }
 
@@ -41,7 +44,8 @@ public class AppController implements Controller {
         try {
             return dbDAO.updateUserUsername(username, newUsername, pass);
         } catch (Exception e) {
-            throw e;
+            e.printStackTrace();
+            return ServerState.DATABASE_ERROR;
         }
     }
 
@@ -50,7 +54,8 @@ public class AppController implements Controller {
         try {
             return dbDAO.updateUserPassword(username, oldPass, newPass);
         } catch (Exception e) {
-            throw e;
+            e.printStackTrace();
+            return ServerState.DATABASE_ERROR;
         }
     }
 
@@ -59,7 +64,8 @@ public class AppController implements Controller {
         try {
             return dbDAO.updateUserPasswordForgotten(user, newPass);
         } catch (Exception e) {
-            throw e;
+            e.printStackTrace();
+            return ServerState.DATABASE_ERROR;
         }
     }
 
@@ -68,7 +74,8 @@ public class AppController implements Controller {
         try {
             return dbDAO.updateUserEmail(user, pass);
         } catch (Exception e) {
-            throw e;
+            e.printStackTrace();
+            return ServerState.DATABASE_ERROR;
         }
     }
 }

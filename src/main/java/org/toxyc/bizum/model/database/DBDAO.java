@@ -38,7 +38,7 @@ public interface DBDAO {
      * @see ByteArray
      * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
      */
-    ServerState signUp(User user, String password);
+    ServerState signUp(User user, String password) throws Exception;
 
     /**
      * Modifica el nombre del usuario.
@@ -60,7 +60,7 @@ public interface DBDAO {
      * @throws SQLException
      * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
      */
-    ServerState updateUserPassword(String username, String password, String newPassword);
+    ServerState updateUserPassword(String username, String password, String newPassword) throws Exception;
 
     /**
      * Modifica la contraseña del usuario si esta ha sido olvidada.
@@ -71,7 +71,7 @@ public interface DBDAO {
      * @throws SQLException
      * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
      */
-    ServerState updateUserPasswordForgotten(User user, String newPassword);
+    ServerState updateUserPasswordForgotten(User user, String newPassword) throws Exception;
 
     /**
      * Modifica el email del usuario.

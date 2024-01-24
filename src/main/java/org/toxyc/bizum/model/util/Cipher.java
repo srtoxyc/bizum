@@ -5,13 +5,13 @@ import java.security.SecureRandom;
 
 /**
  * Singleton for string encryption. Uses a salt (encrypted value for key encryption randomization) associated with a user to generate a unique key encryption for each user.
- * @author Iván Vicente Morales (<a href="https://github.com/srtoxyc">@srtoxyc</a>)
+ * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
  */
 public class Cipher {
     /**
      * Generates a random salt.
      * @return Salt in byte array format.
-     * @author Iván Vicente Morales (<a href="https://github.com/srtoxyc">@srtoxyc</a>)
+     * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
      */
     public static byte[] generateSalt() {
         byte[] salt = new byte[16];
@@ -25,7 +25,7 @@ public class Cipher {
      * @param password User's password.
      * @param salt User's salt.
      * @return Encrypted password in byte array format.
-     * @author Iván Vicente Morales (<a href="https://github.com/srtoxyc">@srtoxyc</a>)
+     * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
      */
     public static byte[] hashPassword(String password, byte[] salt) {
         try {
@@ -45,7 +45,7 @@ public class Cipher {
      * @param salt User's salt in byte array format.
      * @param storedHashedPassword User's password in byte array format.
      * @return Evaluation of equality.
-     * @author Iván Vicente Morales (<a href="https://github.com/srtoxyc">@srtoxyc</a>)
+     * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
      */
     public static boolean verifyPassword(String enteredPassword, byte[] salt, byte[] storedHashedPassword) {
         byte[] calculatedHash = hashPassword(enteredPassword, salt);

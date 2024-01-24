@@ -3,14 +3,14 @@ import java.util.Arrays;
 
 /**
  * Convierte un array de bytes a una cadena hexadecimal y viceversa.
- * @author Iván Vicente Morales (<a href="https://github.com/srtoxyc">@srtoxyc</a>)
+ * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
  */
 public class ByteHexConverter {
     /**
      * Convierte un array de bytes a una cadena hexadecimal.
      * @param bytes Array de bytes.
      * @return Cadena hexadecimal.
-     * @author Iván Vicente Morales (<a href="https://github.com/srtoxyc">@srtoxyc</a>)
+     * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
      */
     public static String bytesToHex(byte[] bytes) {
         StringBuilder stringBuilder = new StringBuilder();
@@ -24,7 +24,7 @@ public class ByteHexConverter {
      * Convierte una cadena hexadecimal en un array de bytes.
      * @param hex Cadena hexadecimal.
      * @return Array de bytes.
-     * @author Iván Vicente Morales (<a href="https://github.com/srtoxyc">@srtoxyc</a>)
+     * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
      */
     public static byte[] hexToBytes(String hex) {
         int len = hex.length();

@@ -4,8 +4,11 @@ import org.toxyc.bizum.model.entities.Email;
 import org.toxyc.bizum.model.entities.ServerState;
 import org.toxyc.bizum.model.entities.User;
 
+/**
+ * Objeto de acceso a datos de la base de datos MySQL.
+ * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
+ */
 public class MySQLDAO implements DBDAO {
-
     @Override
     public Boolean checkLogin(String username, String password) {
         // TODO Auto-generated method stub

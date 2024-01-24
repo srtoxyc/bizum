@@ -12,4 +12,8 @@ public enum ServerState {
     ServerState(Integer state) {
         this.state = state;
     }
+
+    public Integer toInt() {
+        return this.state;
+    }
 }

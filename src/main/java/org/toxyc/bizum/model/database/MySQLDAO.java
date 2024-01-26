@@ -6,7 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.toxyc.bizum.model.entities.Email;
 import org.toxyc.bizum.model.entities.ServerState;
 import org.toxyc.bizum.model.entities.User;
@@ -18,16 +17,16 @@ import org.toxyc.bizum.model.util.Cipher;
  * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
  */
 public class MySQLDAO implements DBDAO {
-    private final static String DB_URL          = "jdbc:mysql://localhost:3306/bizum?";
-    private final static String DB_USER         = "root";
-    private final static String DB_PASSWORD     = "";
+    private final static String DB_URL          = "jdbc:mysql://gfaws.ckwawk4f9hpm.eu-west-3.rds.amazonaws.com:3306/Gfcuentas";
+    private final static String DB_USER         = "admin";
+    private final static String DB_PASSWORD     = "gfmanager";
     private final static String DB_DRIVER       = "com.mysql.cj.jdbc.Driver";
 
     private Connection conn                     = null;
 
     private void connect() {
-        final String MSG_CLASS_ERROR            = "Error al cargar el driver de MySQL";
-        final String MSG_SQL_ERROR              = "Error al conectar con la base de datos";
+        final String MSG_CLASS_ERROR            = "Error al cargar el driver de MySQL.";
+        final String MSG_SQL_ERROR              = "Error al conectar con la base de datos.";
 
         try {
             Class.forName(DB_DRIVER);
@@ -40,7 +39,7 @@ public class MySQLDAO implements DBDAO {
     }
 
     private void disconnect() {
-        final String MSG_SQL_ERROR = "Error al cerrar la conexión con la base de datos";
+        final String MSG_SQL_ERROR = "Error al cerrar la conexión con la base de datos.";
 
         try {
             this.conn.close();

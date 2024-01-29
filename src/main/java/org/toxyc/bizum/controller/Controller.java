@@ -83,6 +83,13 @@ public interface Controller {
      */
     ServerState updateUserEmail(User user, String newPassword);
 
-    ServerState deposit(String emisor, String password, Double money, String receptor);
-    ServerState receive(String user, String password);
+    String getSession(String username, String password);
+    String getSession(Email email, String password);
+
+    ServerState assignPhoneNumber(String username, String password, String phoneNumber);
+    
+    ServerState createAccount(String username, String password, String phoneNumber);
+    String getAccount(String phoneNumber);
+
+    ServerState deposit(String username, String password, String phoneNumberEmisor, String phoneNumberReceptor, Double money);
 }

@@ -38,7 +38,7 @@ public interface DBDAO {
      * @see ByteArray
      * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
      */
-    ServerState signUp(User user, String password) throws Exception;
+    ServerState signUp(User user, String password);
 
     /**
      * Modifica el nombre del usuario.
@@ -60,7 +60,7 @@ public interface DBDAO {
      * @throws SQLException
      * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
      */
-    ServerState updateUserPassword(String username, String password, String newPassword) throws Exception;
+    ServerState updateUserPassword(String username, String password, String newPassword);
 
     /**
      * Modifica la contraseña del usuario si esta ha sido olvidada.
@@ -71,7 +71,7 @@ public interface DBDAO {
      * @throws SQLException
      * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
      */
-    ServerState updateUserPasswordForgotten(User user, String newPassword) throws Exception;
+    ServerState updateUserPasswordForgotten(User user, String newPassword);
 
     /**
      * Modifica el email del usuario.
@@ -83,6 +83,13 @@ public interface DBDAO {
      */
     ServerState updateUserEmail(User user, String newPassword);
 
-    ServerState deposit(String username, String password, String phoneNumber, Double money) throws Exception;
-    ServerState receive(String user, String password) throws Exception;
+    String getSession(String username, String password) throws Exception;
+    String getSession(Email email, String password) throws Exception;
+
+    ServerState assignPhoneNumber(String username, String password, String phoneNumber);
+    
+    ServerState createAccount(String username, String password, String phoneNumber);
+    String getAccount(String phoneNumber) throws Exception;
+
+    ServerState deposit(String username, String password, String phoneNumberEmisor, String phoneNumberReceptor, Double money);
 }

@@ -1,7 +1,6 @@
 package org.toxyc.bizum.model.entities;
 
-
-public class Card {
+public class Card implements Parseable {
     private Integer numCard;
     private String name;
     private Integer cvv;
@@ -53,6 +52,28 @@ public class Card {
 
     @Override
     public String toString() {
-        return String.format("");
+        return this.toJSON();
+    }
+
+    @Override
+    public String toJSON() {
+        return "{" +
+                "\"numCard\":" + numCard +
+                ", \"name\":\"" + name + '\"' +
+                ", \"cvv\":" + cvv +
+                ", \"expirationDate\":\"" + expirationDate + '\"' +
+                ", \"account\":" + account +
+                '}';
+    }
+
+    @Override
+    public String toXML() {
+        return "<card>" +
+                "<numCard>" + numCard + "</numCard>" +
+                "<name>" + name + "</name>" +
+                "<cvv>" + cvv + "</cvv>" +
+                "<expirationDate>" + expirationDate + "</expirationDate>" +
+                "<account>" + account + "</account>" +
+                "</card>";
     }
 }

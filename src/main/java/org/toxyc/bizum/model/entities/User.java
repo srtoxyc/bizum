@@ -2,14 +2,13 @@ package org.toxyc.bizum.model.entities;
 
 import java.util.List;
 
-public class User {
+public class User implements Parseable {
     private Integer id;
     private String username;
     private Email email;
     private List<String> phoneNumbers;
     private byte[] password;
     private byte[] salt;
-    private List<Asignacion> asignacion;
 
     public User(String username, Email email) {
         this.username   = username;
@@ -60,14 +59,25 @@ public class User {
     public void addPhoneNumber(String phoneNumber) {
         this.phoneNumbers.add(phoneNumber);
     }
-    
-    public List<Asignacion> getAsignacion() {
-        return asignacion;
+
+    @Override
+    public String toString() {
+        return this.toJSON();
     }
 
-    public void assign(Account account) {
-        Asignacion asignacion = new Asignacion(this, account);
-        this.asignacion.add(asignacion);
-        account.getAsignacion().add(asignacion);
+    @Override
+    public String toJSON() {
+        return "{" +
+                "\"username\":\"" + username + '\"' +
+                ", \"email\":\"" + email + '\"' +
+                '}';
+    }
+
+    @Override
+    public String toXML() {
+        return "<user>" +
+                "<username>" + username + "</username>" +
+                "<email>" + email + "</email>" +
+                "</user>";
     }
 }

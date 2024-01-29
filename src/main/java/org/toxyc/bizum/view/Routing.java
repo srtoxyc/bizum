@@ -14,13 +14,13 @@ public class Routing {
 
     @GetMapping("/login")
 	public Boolean login(
-        @RequestParam(value = "username", defaultValue = "") String username, 
+        @RequestParam(value = "user", defaultValue = "") String user, 
         @RequestParam(value = "password", defaultValue = "") String password
     ) {
-        if(username.matches(Email.EMAIL_REGEX)) {
-            return appController.checkLogin(new Email(username), password);
+        if(user.matches(Email.EMAIL_REGEX)) {
+            return appController.checkLogin(new Email(user), password);
         } else {
-            return appController.checkLogin(username, password);
+            return appController.checkLogin(user, password);
         }
 	}
 
@@ -69,21 +69,51 @@ public class Routing {
         return appController.updateUserEmail(new User(username, new Email(email)), password).toInt();
 	}
 
-    @GetMapping("/deposit")
-	public Integer deposit(
-        @RequestParam(value = "emisor", defaultValue = "") String username,
-        @RequestParam(value = "password", defaultValue = "") String password,
-        @RequestParam(value = "money", defaultValue = "") Double money,
-        @RequestParam(value = "receptor", defaultValue = "") String receptor
-    ) {
-        return appController.deposit(username, password, money, receptor).toInt();
-	}
-
-    @GetMapping("/receive")
-	public Integer receive(
-        @RequestParam(value = "username", defaultValue = "") String username,
+    @GetMapping("/session")
+	public String getSession(
+        @RequestParam(value = "user", defaultValue = "") String user,
         @RequestParam(value = "password", defaultValue = "") String password
     ) {
-        return appController.receive(username, password).toInt();
+        if(user.matches(Email.EMAIL_REGEX)) {
+            return appController.getSession(new Email(user), password);
+        } else {
+            return appController.getSession(user, password);
+        }
 	}
+
+    @GetMapping("/assignPhoneNumber")
+	public Integer getSession(
+        @RequestParam(value = "username", defaultValue = "") String username,
+        @RequestParam(value = "password", defaultValue = "") String password,
+        @RequestParam(value = "number", defaultValue = "") String phoneNumber
+    ) {
+        return appController.assignPhoneNumber(username, password, phoneNumber).toInt();
+	}
+
+    @GetMapping("/account/create")
+	public Integer createAccount(
+        @RequestParam(value = "username", defaultValue = "") String username,
+        @RequestParam(value = "password", defaultValue = "") String password,
+        @RequestParam(value = "number", defaultValue = "") String phoneNumber
+    ) {
+        return appController.createAccount(username, password, phoneNumber).toInt();
+	}
+
+    @GetMapping("/account/get")
+	public String getAccount(
+        @RequestParam(value = "number", defaultValue = "") String phoneNumber
+    ) {
+        return appController.getAccount(phoneNumber);
+	}
+
+    @GetMapping("/deposit")
+    public Integer deposit(
+        @RequestParam(value = "username", defaultValue = "") String username,
+        @RequestParam(value = "password", defaultValue = "") String password,
+        @RequestParam(value = "emisor", defaultValue = "") String phoneNumberEmisor,
+        @RequestParam(value = "receptor", defaultValue = "") String phoneNumberReceptor,
+        @RequestParam(value = "money", defaultValue = "") Double money
+    ) {
+        return appController.deposit(username, password, phoneNumberEmisor, phoneNumberReceptor, money).toInt();
+    }
 }

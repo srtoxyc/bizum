@@ -88,9 +88,29 @@ public class AppController implements Controller {
     }
 
     @Override
-    public ServerState deposit(String emisor, String password, Double money, String receptor) {
+    public String getSession(String username, String password) {
         try {
-            return dbDAO.deposit(emisor, password, money, receptor);
+            return dbDAO.getSession(username, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public String getSession(Email email, String password) {
+        try {
+            return dbDAO.getSession(email, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public ServerState assignPhoneNumber(String username, String password, String phoneNumber) {
+        try {
+            return dbDAO.assignPhoneNumber(username, password, phoneNumber);
         } catch (Exception e) {
             e.printStackTrace();
             return ServerState.DATABASE_ERROR;
@@ -98,9 +118,29 @@ public class AppController implements Controller {
     }
 
     @Override
-    public ServerState receive(String user, String password) {
+    public ServerState createAccount(String username, String password, String phoneNumber) {
         try {
-            return dbDAO.receive(user, password);
+            return dbDAO.createAccount(username, password, phoneNumber);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ServerState.DATABASE_ERROR;
+        }
+    }
+
+    @Override
+    public String getAccount(String phoneNumber) {
+        try {
+            return dbDAO.getAccount(phoneNumber);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public ServerState deposit(String username, String password, String phoneNumberEmisor, String phoneNumberReceptor, Double money) {
+        try {
+            return dbDAO.deposit(username, password, phoneNumberEmisor, phoneNumberReceptor, money);
         } catch (Exception e) {
             e.printStackTrace();
             return ServerState.DATABASE_ERROR;

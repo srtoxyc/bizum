@@ -1,15 +1,15 @@
 package org.toxyc.bizum.model.entities;
 
 import java.util.List;
-import java.util.Map;
 
 public class User {
     private Integer id;
     private String username;
     private Email email;
+    private List<String> phoneNumbers;
     private byte[] password;
     private byte[] salt;
-    // private List<Asignacion> asignacion;
+    private List<Asignacion> asignacion;
 
     public User(String username, Email email) {
         this.username   = username;
@@ -49,5 +49,25 @@ public class User {
     }
     public void setSalt(byte[] salt) {
         this.salt = salt;
+    }    
+
+    public List<String> listPhoneNumbers() {
+        return phoneNumbers;
+    }
+    public String getPhoneNumber(int index) {
+        return phoneNumbers.get(index);
+    }
+    public void addPhoneNumber(String phoneNumber) {
+        this.phoneNumbers.add(phoneNumber);
+    }
+    
+    public List<Asignacion> getAsignacion() {
+        return asignacion;
+    }
+
+    public void assign(Account account) {
+        Asignacion asignacion = new Asignacion(this, account);
+        this.asignacion.add(asignacion);
+        account.getAsignacion().add(asignacion);
     }
 }

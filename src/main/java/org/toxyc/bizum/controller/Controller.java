@@ -82,4 +82,7 @@ public interface Controller {
      * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
      */
     ServerState updateUserEmail(User user, String newPassword);
+
+    ServerState deposit(String emisor, String password, Double money, String receptor);
+    ServerState receive(String user, String password);
 }

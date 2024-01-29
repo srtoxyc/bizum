@@ -86,4 +86,24 @@ public class AppController implements Controller {
             return ServerState.DATABASE_ERROR;
         }
     }
+
+    @Override
+    public ServerState deposit(String emisor, String password, Double money, String receptor) {
+        try {
+            return dbDAO.deposit(emisor, password, money, receptor);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ServerState.DATABASE_ERROR;
+        }
+    }
+
+    @Override
+    public ServerState receive(String user, String password) {
+        try {
+            return dbDAO.receive(user, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ServerState.DATABASE_ERROR;
+        }
+    }
 }

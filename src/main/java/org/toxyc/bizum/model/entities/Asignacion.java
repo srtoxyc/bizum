@@ -5,8 +5,8 @@ public class Asignacion {
     private Account account;
     
     public Asignacion(User user, Account account) {
-        this.user = user;
-        this.account = account;
+        this.user       = user;
+        this.account    = account;
     }
 
     public User getUser() {

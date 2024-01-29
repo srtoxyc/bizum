@@ -6,7 +6,7 @@ public class Account {
     private String accountNum;
     private Double money;
     private String phoneNumber;
-    // private List<Asignacion> asignacion;
+    private List<Asignacion> asignacion;
 
     public Account(String accountNum, Double money, String phoneNumber) {
         this.accountNum     = accountNum;
@@ -26,12 +26,22 @@ public class Account {
     }
     public void setMoney(Double money) {
         this.money = money;
-    }
+    }       
     
     public String getPhoneNumber() {
         return phoneNumber;
     }
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+    
+    public List<Asignacion> getAsignacion() {
+        return asignacion;
+    }
+
+    public void assign(User user) {
+        Asignacion asignacion = new Asignacion(user, this);
+        this.asignacion.add(asignacion);
+        user.getAsignacion().add(asignacion);
     }
 }

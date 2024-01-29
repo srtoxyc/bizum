@@ -237,11 +237,11 @@ public class MySQLDAO implements DBDAO {
 
     @Override
     public ServerState updateUserUsername(String username, String newUsername, String pass) {
-        this.connect();
-
         final String QUERY_UPDATE_USERNAME = String.format("UPDATE User SET username = \"%s\" WHERE username = \"%s\"", newUsername, username);
-
+        
         if (this.checkLogin(username, pass)) {
+            this.connect();
+
             try {
                 executeUpdate(QUERY_UPDATE_USERNAME);
                 return ServerState.SUCCESS;
@@ -252,18 +252,18 @@ public class MySQLDAO implements DBDAO {
             }
         } else {
             this.disconnect();
-            return ServerState.INVALID_PASSWORD;
+            return ServerState.INVALID_LOGIN;
         }
     }
 
     @Override
     public ServerState updateUserPassword(String username, String oldPass, String newPass) throws Exception {
-        this.connect();
-
-        User tempUser = this.getUser(username);
-        final String QUERY_UPDATE_PASSWORD = String.format("UPDATE User SET password = \"%s\" WHERE username = \"%s\"", ByteHexConverter.bytesToHex(Cipher.hashPassword(newPass, tempUser.getSalt())), username);
+        byte[] salt = Cipher.generateSalt();
+        final String QUERY_UPDATE_PASSWORD = String.format("UPDATE User SET password = \"%s\", salt = \"%s\" WHERE username = \"%s\"", ByteHexConverter.bytesToHex(Cipher.hashPassword(newPass, salt)), ByteHexConverter.bytesToHex(salt), username);
         
         if (this.checkLogin(username, oldPass)) {
+            this.connect();
+
             try {
                 executeUpdate(QUERY_UPDATE_PASSWORD);
                 return ServerState.SUCCESS;
@@ -274,7 +274,7 @@ public class MySQLDAO implements DBDAO {
             }
         } else {
             this.disconnect();
-            return ServerState.INVALID_PASSWORD;
+            return ServerState.INVALID_LOGIN;
         }
     }
 
@@ -282,15 +282,16 @@ public class MySQLDAO implements DBDAO {
     public ServerState updateUserPasswordForgotten(User user, String newPass) throws Exception {
         this.connect();
 
-        User tempUser = this.getUser(user.getUsername());
-        final String QUERY_UPDATE_PASSWORD_FORGOTTEN = String.format("UPDATE User SET password = \"%s\" WHERE username = \"%s\" AND email = \"%s\"", ByteHexConverter.bytesToHex(Cipher.hashPassword(newPass, tempUser.getSalt())), user.getUsername(), user.getEmail().toString());
+        byte[] salt = Cipher.generateSalt();
+        final String QUERY_UPDATE_PASSWORD_FORGOTTEN = String.format("UPDATE User SET password = \"%s\", salt = \"%s\" WHERE username = \"%s\" AND email = \"%s\"", ByteHexConverter.bytesToHex(Cipher.hashPassword(newPass, salt)), ByteHexConverter.bytesToHex(salt), user.getUsername(), user.getEmail().toString());
         
         PreparedStatement ps = conn.prepareStatement(QUERY_UPDATE_PASSWORD_FORGOTTEN);
 
         try {
             int result = ps.executeUpdate();
+
             if (result == 0) {
-                return ServerState.INVALID_USERNAME;
+                return ServerState.INVALID_LOGIN;
             } else {
                 return ServerState.SUCCESS;
             }
@@ -304,11 +305,11 @@ public class MySQLDAO implements DBDAO {
 
     @Override
     public ServerState updateUserEmail(User user, String pass) {
-        this.connect();
-
         final String QUERY_UPDATE_EMAIL = String.format("UPDATE User SET email = \"%s\" WHERE username = \"%s\"", user.getEmail().toString(), user.getUsername());
-
+        
         if (this.checkLogin(user.getUsername(), pass)) {
+            this.connect();
+
             try {
                 executeUpdate(QUERY_UPDATE_EMAIL);
                 return ServerState.SUCCESS;
@@ -319,33 +320,17 @@ public class MySQLDAO implements DBDAO {
             }
         } else {
             this.disconnect();
-            return ServerState.INVALID_PASSWORD;
+            return ServerState.INVALID_LOGIN;
         }
     }
 
     @Override
-    public ServerState deposit(User emisor, String password, Double money, User receptor) throws Exception {
-        if(this.checkLogin(emisor.getUsername(), password)) {
-            this.connect();
-
-            final String QUERY_UPDATE_MONEY = String.format("UPDATE User SET money = money + %f WHERE username = \"%s\"", money, emisor.getUsername());
-
-            try {
-                this.executeUpdate(QUERY_UPDATE_MONEY);
-                return ServerState.SUCCESS;
-            } catch (SQLException e) {
-                return ServerState.DATABASE_ERROR;
-            } finally {
-                this.disconnect();
-            }
-        } else {
-            this.disconnect();
-            return ServerState.INVALID_PASSWORD;
-        }
+    public ServerState deposit(String username, String password, String phoneNumber, Double money) throws Exception {
+        
     }
 
     @Override
-    public ServerState receive(User user, String password) throws Exception {
+    public ServerState receive(String user, String password) throws Exception {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'receive'");
     }

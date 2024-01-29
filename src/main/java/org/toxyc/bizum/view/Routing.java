@@ -68,4 +68,22 @@ public class Routing {
     ) {
         return appController.updateUserEmail(new User(username, new Email(email)), password).toInt();
 	}
+
+    @GetMapping("/deposit")
+	public Integer deposit(
+        @RequestParam(value = "emisor", defaultValue = "") String username,
+        @RequestParam(value = "password", defaultValue = "") String password,
+        @RequestParam(value = "money", defaultValue = "") Double money,
+        @RequestParam(value = "receptor", defaultValue = "") String receptor
+    ) {
+        return appController.deposit(username, password, money, receptor).toInt();
+	}
+
+    @GetMapping("/receive")
+	public Integer receive(
+        @RequestParam(value = "username", defaultValue = "") String username,
+        @RequestParam(value = "password", defaultValue = "") String password
+    ) {
+        return appController.receive(username, password).toInt();
+	}
 }

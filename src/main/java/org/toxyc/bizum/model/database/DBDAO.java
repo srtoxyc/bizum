@@ -83,6 +83,6 @@ public interface DBDAO {
      */
     ServerState updateUserEmail(User user, String newPassword);
 
-    ServerState deposit(User emisor, String password, Double money, User receptor) throws Exception;
-    ServerState receive(User user, String password) throws Exception;
+    ServerState deposit(String username, String password, String phoneNumber, Double money) throws Exception;
+    ServerState receive(String user, String password) throws Exception;
 }

@@ -82,4 +82,7 @@ public interface DBDAO {
      * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
      */
     ServerState updateUserEmail(User user, String newPassword);
+
+    ServerState deposit(User emisor, String password, Double money, User receptor) throws Exception;
+    ServerState receive(User user, String password) throws Exception;
 }

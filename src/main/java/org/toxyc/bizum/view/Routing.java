@@ -14,13 +14,13 @@ public class Routing {
 
     @GetMapping("/login")
 	public Boolean login(
-        @RequestParam(value = "user", defaultValue = "") String user, 
+        @RequestParam(value = "username", defaultValue = "") String username, 
         @RequestParam(value = "password", defaultValue = "") String password
     ) {
-        if(user.matches(Email.EMAIL_REGEX)) {
-            return appController.checkLogin(new Email(user), password);
+        if(username.matches(Email.EMAIL_REGEX)) {
+            return appController.checkLogin(new Email(username), password);
         } else {
-            return appController.checkLogin(user, password);
+            return appController.checkLogin(username, password);
         }
 	}
 

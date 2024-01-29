@@ -134,6 +134,7 @@ public class MySQLDAO implements DBDAO {
 
                 user.setPassword(ByteHexConverter.hexToBytes(rs.getString("password")));
                 user.setSalt(ByteHexConverter.hexToBytes(rs.getString("salt")));
+                System.out.println(user.toString());
             }
 
             return user;
@@ -175,14 +176,15 @@ public class MySQLDAO implements DBDAO {
     /* ================# PUBLIC FUNCTIONS #================ */
     
     @Override
-    public Boolean checkLogin(String user, String pass) {
+    public Boolean checkLogin(String username, String pass) {
         this.connect();
 
         try {
-            User userObj = this.getUser(user);
+            User userObj = this.getUser(username);
 
             return Cipher.verifyPassword(pass, userObj.getSalt(), userObj.getPassword());
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         } finally {
             this.disconnect();
@@ -218,12 +220,13 @@ public class MySQLDAO implements DBDAO {
                 this.disconnect();
                 return ServerState.INVALID_EMAIL;
             } else {
-                final String QUERY_INSERT_USER = "INSERT INTO User (username, email, password, salt) VALUES (?, ?, ?, ?)";
+                final String QUERY_INSERT_USER = String.format("INSERT INTO User (username, email, password, salt) VALUES (\"%s\", \"%s\", ?, ?)", user.getUsername(), user.getEmail().toString());
 
                 try {
                     executeByteInsert(QUERY_INSERT_USER, Cipher.hashPassword(pass, salt), salt);
                     return ServerState.SUCCESS;
                 } catch (SQLException e) {
+                    e.printStackTrace();
                     return ServerState.DATABASE_ERROR;
                 } finally {
                     this.disconnect();
@@ -318,5 +321,32 @@ public class MySQLDAO implements DBDAO {
             this.disconnect();
             return ServerState.INVALID_PASSWORD;
         }
+    }
+
+    @Override
+    public ServerState deposit(User emisor, String password, Double money, User receptor) throws Exception {
+        if(this.checkLogin(emisor.getUsername(), password)) {
+            this.connect();
+
+            final String QUERY_UPDATE_MONEY = String.format("UPDATE User SET money = money + %f WHERE username = \"%s\"", money, emisor.getUsername());
+
+            try {
+                this.executeUpdate(QUERY_UPDATE_MONEY);
+                return ServerState.SUCCESS;
+            } catch (SQLException e) {
+                return ServerState.DATABASE_ERROR;
+            } finally {
+                this.disconnect();
+            }
+        } else {
+            this.disconnect();
+            return ServerState.INVALID_PASSWORD;
+        }
+    }
+
+    @Override
+    public ServerState receive(User user, String password) throws Exception {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'receive'");
     }
 }

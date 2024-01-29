@@ -1,11 +1,15 @@
 package org.toxyc.bizum.model.entities;
 
+import java.util.List;
+import java.util.Map;
+
 public class User {
     private Integer id;
     private String username;
     private Email email;
     private byte[] password;
     private byte[] salt;
+    // private List<Asignacion> asignacion;
 
     public User(String username, Email email) {
         this.username   = username;

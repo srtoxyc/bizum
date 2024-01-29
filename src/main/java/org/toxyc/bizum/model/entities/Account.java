@@ -1,9 +1,12 @@
 package org.toxyc.bizum.model.entities;
 
+import java.util.List;
+
 public class Account {
     private String accountNum;
     private Double money;
     private String phoneNumber;
+    // private List<Asignacion> asignacion;
 
     public Account(String accountNum, Double money, String phoneNumber) {
         this.accountNum     = accountNum;

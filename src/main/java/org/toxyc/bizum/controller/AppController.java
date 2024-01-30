@@ -7,7 +7,7 @@ import org.toxyc.bizum.model.entities.ServerState;
 import org.toxyc.bizum.model.entities.User;
 
 /**
- * Objeto controlador de la aplicación.
+ * Application controller object.
  * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
  */
 public class AppController implements Controller {
@@ -98,16 +98,6 @@ public class AppController implements Controller {
     }
 
     @Override
-    public String getSession(Email email, String password) {
-        try {
-            return dbDAO.getSession(email, password);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @Override
     public ServerState assignPhoneNumber(String username, String password, String phoneNumber) {
         try {
             return dbDAO.assignPhoneNumber(username, password, phoneNumber);
@@ -128,9 +118,9 @@ public class AppController implements Controller {
     }
 
     @Override
-    public String getAccount(String phoneNumber) {
+    public String getAccount(String username, String password, String phoneNumber) {
         try {
-            return dbDAO.getAccount(phoneNumber);
+            return dbDAO.getAccount(username, password, phoneNumber);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

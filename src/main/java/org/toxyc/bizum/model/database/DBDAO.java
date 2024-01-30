@@ -13,8 +13,8 @@ import org.toxyc.bizum.model.entities.User;
 public interface DBDAO {
     /**
      * Evalúa si el usuario existe en la base de datos y si los parámetros de login son correctos, si es así, permite el acceso a la cuenta.
-     * @param username Nombre del usuario.
-     * @param pass
+     * @param username User's username.
+     * @param pass User's password.
      * @return Si el usuario puede o no puede acceder a la cuenta. No dará acceso si los parámetros de login son incorrectos o si ocurre un error en la comunicación con la base de datos.
      * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
      */
@@ -22,18 +22,18 @@ public interface DBDAO {
 
     /**
      * Evalúa si el usuario existe en la base de datos y si los parámetros de login son correctos, si es así, permite el acceso a la cuenta.
-     * @param email Email del usuario (cualquier servicio está permitido).
-     * @param pass
+     * @param email User's email.
+     * @param pass User's password.
      * @return Si el usuario puede o no puede acceder a la cuenta. No dará acceso si los parámetros de login son incorrectos o si ocurre un error en la comunicación con la base de datos.
      * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
      */
     Boolean checkLogin(Email email, String password);
 
     /**
-     * Registra un usuario.
-     * @param user
-     * @param pass
-     * @return Estado del registro del usuario.
+     * Registers an user in the database.
+     * @param user User's username.
+     * @param pass User's password.
+     * @return State of the user's registration.
      * @throws SQLException
      * @see ByteArray
      * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
@@ -41,55 +41,63 @@ public interface DBDAO {
     ServerState signUp(User user, String password);
 
     /**
-     * Modifica el nombre del usuario.
-     * @param username Anterior nombre del usuario.
-     * @param newUsername Nuevo nombre del usuario.
-     * @param pass
-     * @return Estado de la modificación del nombre del usuario.
+     * Modifies the user's username.
+     * @param username User's username.
+     * @param newUsername User's new username.
+     * @param pass User's password.
+     * @return State of the user's username modification.
      * @throws SQLException
      * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
      */
     ServerState updateUserUsername(String username, String newUsername, String password);
 
     /**
-     * Modifica la contraseña del usuario.
-     * @param username Nombre del usuario.
-     * @param oldPass Anterior contraseña del usuario.
-     * @param newPass Nueva contraseña del usuario.
-     * @return Estado de la modificación de la contraseña del usuario.
+     * Modifies the user's password.
+     * @param username User's username.
+     * @param oldPass User's old password.
+     * @param newPass User's new password.
+     * @return State of the user's password modification.
      * @throws SQLException
      * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
      */
     ServerState updateUserPassword(String username, String password, String newPassword);
 
     /**
-     * Modifica la contraseña del usuario si esta ha sido olvidada.
-     * @param username Nombre del usuario.
-     * @param email Email del usuario.
-     * @param newPass Nueva contraseña del usuario.
-     * @return Estado de la modificación de la contraseña del usuario.
+     * Modifies the user's password if it has been forgotten.
+     * @param username User's username.
+     * @param email User's email.
+     * @param newPass New password for the user.
+     * @return State of the user's password modification.
      * @throws SQLException
      * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
      */
     ServerState updateUserPasswordForgotten(User user, String newPassword);
 
     /**
-     * Modifica el email del usuario.
-     * @param user
-     * @param pass
-     * @return Estado de la modificación del email.
+     * Modifies the user's email.
+     * @param user User's username.
+     * @param pass User's password.
+     * @return State of the user's email modification.
      * @throws SQLException
      * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
      */
     ServerState updateUserEmail(User user, String newPassword);
 
+    /**
+     * Modifies the user's phone number.
+     * @param username User's username.
+     * @param password User's password.
+     * @return State of the phone number modification.
+     * @throws Exception
+     * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
+     */
     String getSession(String username, String password) throws Exception;
-    String getSession(Email email, String password) throws Exception;
 
     ServerState assignPhoneNumber(String username, String password, String phoneNumber);
     
     ServerState createAccount(String username, String password, String phoneNumber);
-    String getAccount(String phoneNumber) throws Exception;
+
+    String getAccount(String username, String password, String phoneNumber);
 
     ServerState deposit(String username, String password, String phoneNumberEmisor, String phoneNumberReceptor, Double money);
 }

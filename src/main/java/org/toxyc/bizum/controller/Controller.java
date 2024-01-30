@@ -7,7 +7,7 @@ import org.toxyc.bizum.model.entities.ServerState;
 import org.toxyc.bizum.model.entities.User;
 
 /**
- * Interfaz controladora de la aplicación.
+ * Application controller interface.
  * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
  */
 public interface Controller {
@@ -84,12 +84,12 @@ public interface Controller {
     ServerState updateUserEmail(User user, String newPassword);
 
     String getSession(String username, String password);
-    String getSession(Email email, String password);
 
     ServerState assignPhoneNumber(String username, String password, String phoneNumber);
     
     ServerState createAccount(String username, String password, String phoneNumber);
-    String getAccount(String phoneNumber);
+
+    String getAccount(String username, String password, String phoneNumber);
 
     ServerState deposit(String username, String password, String phoneNumberEmisor, String phoneNumberReceptor, Double money);
 }

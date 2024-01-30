@@ -74,11 +74,7 @@ public class Routing {
         @RequestParam(value = "user", defaultValue = "") String user,
         @RequestParam(value = "password", defaultValue = "") String password
     ) {
-        if(user.matches(Email.EMAIL_REGEX)) {
-            return appController.getSession(new Email(user), password);
-        } else {
-            return appController.getSession(user, password);
-        }
+        return appController.getSession(user, password);
 	}
 
     @GetMapping("/assignPhoneNumber")
@@ -101,9 +97,11 @@ public class Routing {
 
     @GetMapping("/account/get")
 	public String getAccount(
+        @RequestParam(value = "username", defaultValue = "") String username,
+        @RequestParam(value = "password", defaultValue = "") String password,
         @RequestParam(value = "number", defaultValue = "") String phoneNumber
     ) {
-        return appController.getAccount(phoneNumber);
+        return appController.getAccount(username, password, phoneNumber);
 	}
 
     @GetMapping("/deposit")

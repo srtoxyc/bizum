@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Locale;
 
 import org.toxyc.bizum.model.entities.Account;
 import org.toxyc.bizum.model.entities.Email;
@@ -26,8 +27,8 @@ public class MySQLDAO implements DBDAO {
     private Connection conn                     = null;
 
     private void connect() {
-        final String MSG_CLASS_ERROR            = "Error al cargar el driver de MySQL.";
-        final String MSG_SQL_ERROR              = "Error al conectar con la base de datos.";
+        final String MSG_CLASS_ERROR            = "Error on loading MySQL driver.";
+        final String MSG_SQL_ERROR              = "Database connection has not been able to be set.";
 
         try {
             Class.forName(DB_DRIVER);
@@ -40,7 +41,7 @@ public class MySQLDAO implements DBDAO {
     }
 
     private void disconnect() {
-        final String MSG_SQL_ERROR = "Error al cerrar la conexión con la base de datos.";
+        final String MSG_SQL_ERROR = "Database connection has not been able to be disconnected.";
 
         try {
             this.conn.close();
@@ -50,9 +51,9 @@ public class MySQLDAO implements DBDAO {
     }
 
     /**
-     * Ejecuta una selección a la base de datos.
-     * @param sql Sentencia SQL (no admite scripts).
-     * @return Conjunto de resultados que devuelve la consulta.
+     * Executes a select operation in the database.
+     * @param sql SQL query (no scripts allowed).
+     * @return Data set returned by the selection operation.
      * @throws SQLException
      * @see ResultSet
      * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
@@ -63,27 +64,22 @@ public class MySQLDAO implements DBDAO {
     }
 
     /**
-     * Ejecuta una inserción en la base de datos.
-     * 
-     * @param sql Sentencia SQL (no admite scripts).
+     * Executes an insert operation in the database.
+     * @param sql SQL query (no scripts allowed).
      * @throws SQLException
      * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
      */
     private void executeInsert(String sql) throws SQLException {
         PreparedStatement ps = conn.prepareStatement(sql);
-        ps.addBatch();
-        conn.setAutoCommit(false);
-        ps.executeBatch();
-        conn.setAutoCommit(true);
+        ps.executeUpdate();
         ps.close();
     }
 
     /**
-     * Ejecuta una inserción binaria en la base de datos.
-     * 
-     * @param sql  Sentencia SQL (no admite scripts).
-     * @param pass Contraseña cifrada.
-     * @param salt Sal cifrada asociada al usuario.
+     * Executes a binary insert operation in the database.
+     * @param sql SQL query (no scripts allowed).
+     * @param pass Encrypted password.
+     * @param salt Encrypted salt value.
      * @throws SQLException
      * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
      */
@@ -101,9 +97,8 @@ public class MySQLDAO implements DBDAO {
     }
 
     /**
-     * Ejecuta una modificación a un registro de la base de datos.
-     * 
-     * @param sql Sentencia SQL (no admite scripts).
+     * Executes a modification to a database record.
+     * @param sql SQL query (no scripts allowed).
      * @throws SQLException
      * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
      */
@@ -114,9 +109,9 @@ public class MySQLDAO implements DBDAO {
     }
 
     /**
-     * Devuelve un usuario.
-     * @param username Nombre del usuario
-     * @return Usuario
+     * Returns an user.
+     * @param username User's username.
+     * @return User.
      * @throws SQLException
      * @see User
      * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
@@ -154,9 +149,9 @@ public class MySQLDAO implements DBDAO {
     }
 
     /**
-     * Devuelve un usuario.
-     * @param email Email del usuario.
-     * @return Usuario
+     * Returns an user.
+     * @param email User's email.
+     * @return User.
      * @throws SQLException
      * @see User
      * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
@@ -188,23 +183,6 @@ public class MySQLDAO implements DBDAO {
             }
 
             return user;
-        } catch(SQLException e) {
-            throw e;
-        }
-    }
-
-    private Account getAccountByPhoneNumber(String phoneNumber) throws Exception {
-        final String QUERY_ACCOUNT = String.format("SELECT accountNumber, money FROM Account WHERE nTelefono = \"%s\"", phoneNumber);
-
-        try {
-            ResultSet rs = this.executeQuery(QUERY_ACCOUNT);
-            Account account = null;
-
-            while(rs.next()) {
-                account = new Account(rs.getString("accountNumber"), rs.getDouble("money"), phoneNumber);
-            }
-
-            return account;
         } catch(SQLException e) {
             throw e;
         }
@@ -379,16 +357,6 @@ public class MySQLDAO implements DBDAO {
     }
 
     @Override
-    public String getSession(Email email, String password) throws Exception {
-        if(this.checkLogin(email, password)) {
-            this.connect();
-            return this.getUser(email).toString();
-        } else {
-            return null;
-        }
-    }
-
-    @Override
     public ServerState assignPhoneNumber(String username, String password, String phoneNumber) {
         final String QUERY_ASSIGN_PHONE_NUMBER = String.format("INSERT INTO Telefono VALUES (\"%s\", ?)", phoneNumber);
 
@@ -409,23 +377,25 @@ public class MySQLDAO implements DBDAO {
             return ServerState.INVALID_LOGIN;
         }
     }
-    
-    @Override
-    public String getAccount(String phoneNumber) throws Exception {
-        return this.getAccountByPhoneNumber(phoneNumber).toString();
-    }
 
     @Override
     public ServerState createAccount(String username, String password, String phoneNumber) {
-        final String QUERY_INSERT_ACCOUNT = String.format("INSERT INTO Account (accountNumber, money, nTelefono) VALUES (\"%s\", %f, \"%s\")", 1234567893, 0.0, phoneNumber);
+        final String QUERY_INSERT_ACCOUNT = String.format("INSERT INTO Account VALUES (?, ?, ?)");
 
         if(this.checkLogin(username, password)) {
             this.connect();
 
             try {
-                executeInsert(QUERY_INSERT_ACCOUNT);
+                PreparedStatement ps = conn.prepareStatement(QUERY_INSERT_ACCOUNT);
+                ps.setString(1, Cipher.generateAccountNumber());
+                ps.setDouble(2, Account.INITIAL_MONEY);
+                ps.setString(3, phoneNumber);
+                ps.executeUpdate();
+                ps.close();
+
                 return ServerState.SUCCESS;
             } catch(SQLException e) {
+                e.printStackTrace();
                 return ServerState.DATABASE_ERROR;
             } finally {
                 this.disconnect();
@@ -433,12 +403,37 @@ public class MySQLDAO implements DBDAO {
         } else {
             return ServerState.INVALID_LOGIN;
         }
+    }    
+    
+    @Override
+    public String getAccount(String username, String password, String phoneNumber) {
+        try {
+            if(this.checkLogin(username, password)) {
+                final String QUERY_ACCOUNT = String.format("SELECT Account.accountNumber, Account.money FROM Account, Telefono WHERE Account.nTelefono = Telefono.nTelefono AND Account.nTelefono = \"%s\" AND Telefono.id_user = ?", phoneNumber, this.getUser(username).getId());
+
+                ResultSet rs = this.executeQuery(QUERY_ACCOUNT);
+                Account account = null;
+
+                while(rs.next()) {
+                    account = new Account(rs.getString("accountNumber"), rs.getDouble("money"), phoneNumber);
+                }
+
+                return account.toString();
+            } else {
+                return null;
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            this.disconnect();
+        } 
     }
 
     @Override
     public ServerState deposit(String username, String password, String phoneNumberEmisor, String phoneNumberReceptor, Double money) {
-        final String QUERY_UPDATE_EMISOR    = String.format("UPDATE Account SET money = money - %f WHERE nTelefono = \"%s\"", money, phoneNumberEmisor);
-        final String QUERY_UPDATE_RECEPTOR  = String.format("UPDATE Account SET money = money + %f WHERE nTelefono = \"%s\"", money, phoneNumberReceptor);
+        final String QUERY_UPDATE_EMISOR    = String.format(Locale.US, "UPDATE Account SET money = money - %.2f WHERE nTelefono = \"%s\"", money, phoneNumberEmisor);
+        final String QUERY_UPDATE_RECEPTOR  = String.format(Locale.US, "UPDATE Account SET money = money + %.2f WHERE nTelefono = \"%s\"", money, phoneNumberReceptor);
 
         if(this.checkLogin(username, password)) {
             this.connect();
@@ -448,6 +443,7 @@ public class MySQLDAO implements DBDAO {
                 executeUpdate(QUERY_UPDATE_RECEPTOR);
                 return ServerState.SUCCESS;
             } catch(SQLException e) {
+                e.printStackTrace();
                 return ServerState.DATABASE_ERROR;
             } finally {
                 this.disconnect();

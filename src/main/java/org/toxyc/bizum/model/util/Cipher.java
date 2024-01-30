@@ -51,4 +51,21 @@ public class Cipher {
         byte[] calculatedHash = hashPassword(enteredPassword, salt);
         return MessageDigest.isEqual(calculatedHash, storedHashedPassword);
     }
+
+    /**
+     * Generates a random account number.
+     * @return The account number.
+     * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
+     */
+    public static String generateAccountNumber() {
+        final String PREFIX = "ES24";
+
+        String accountNumber = "";
+
+        for (int i = 0; i < 20; i++) {
+            accountNumber += (int) (Math.random() * 10);
+        }
+        
+        return PREFIX + accountNumber;
+    }
 }

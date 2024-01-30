@@ -76,4 +76,14 @@ public class Card implements Parseable {
                 "<account>" + account + "</account>" +
                 "</card>";
     }
+
+    @Override
+    public String toTXT() {
+        return String.format("%d%s%s%s%d%s%s%s%d",
+                this.getNumCard(), Parseable.DELIM,
+                this.getName(), Parseable.DELIM,
+                this.getCVV(), Parseable.DELIM,
+                this.getDueDate(), Parseable.DELIM,
+                this.getAccount().getNumAccount());
+    }
 }

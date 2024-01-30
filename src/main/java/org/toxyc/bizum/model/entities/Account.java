@@ -1,6 +1,8 @@
 package org.toxyc.bizum.model.entities;
 
 public class Account implements Parseable {
+    public final static Double INITIAL_MONEY = 0.0;
+    
     private String accountNum;
     private Double money;
     private String phoneNumber;
@@ -53,5 +55,10 @@ public class Account implements Parseable {
                 "<money>" + money + "</money>" +
                 "<phoneNumber>" + phoneNumber + "</phoneNumber>" +
                 "</account>";
+    }
+
+    @Override
+    public String toTXT() {
+        return String.format("%s%s%s%s%s", this.accountNum, Parseable.DELIM, this.money, Parseable.DELIM, this.phoneNumber);
     }
 }

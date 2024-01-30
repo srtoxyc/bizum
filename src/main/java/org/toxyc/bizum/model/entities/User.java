@@ -1,5 +1,6 @@
 package org.toxyc.bizum.model.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class User implements Parseable {
@@ -11,8 +12,9 @@ public class User implements Parseable {
     private byte[] salt;
 
     public User(String username, Email email) {
-        this.username   = username;
-        this.email      = email;
+        this.username       = username;
+        this.email          = email;
+        this.phoneNumbers   = new ArrayList<String>();
     }
 
     public Integer getId() {
@@ -79,5 +81,10 @@ public class User implements Parseable {
                 "<username>" + username + "</username>" +
                 "<email>" + email + "</email>" +
                 "</user>";
+    }
+
+    @Override
+    public String toTXT() {
+        return String.format("%s%s%s", this.username, Parseable.DELIM, this.email);
     }
 }

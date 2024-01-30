@@ -2,7 +2,7 @@ package org.toxyc.bizum.model.entities;
 
 import java.util.StringTokenizer;
 
-public class Email {
+public class Email implements Parseable {
     public final static String EMAIL_REGEX   = "^[A-Za-z0-9+_.-]+@(.+)$";
     public final static String EMAIL_DELIM   = "@";
 
@@ -49,6 +49,21 @@ public class Email {
 
     @Override
     public String toString() {
+        return this.toJSON();
+    }
+
+    @Override
+    public String toJSON() {
+        return String.format("{\"email\":\"%s\"}", this.toString());
+    }
+
+    @Override
+    public String toXML() {
+        return String.format("<email>%s</email>", this.toString());
+    }
+
+    @Override
+    public String toTXT() {
         return String.format("%s%s%s", this.getIdentifier(), EMAIL_DELIM, this.getService());
     }
 }

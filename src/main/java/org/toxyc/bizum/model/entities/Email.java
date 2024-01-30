@@ -49,12 +49,12 @@ public class Email implements Parseable {
 
     @Override
     public String toString() {
-        return this.toJSON();
+        return this.toTXT();
     }
 
     @Override
     public String toJSON() {
-        return String.format("{\"email\":\"%s\"}", this.toString());
+        return String.format("{\"email\":\"%s\"}", this.getEmail());
     }
 
     @Override

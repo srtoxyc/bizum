@@ -128,6 +128,16 @@ public class AppController implements Controller {
     }
 
     @Override
+    public String listAccounts(String username, String password) {
+        try {
+            return dbDAO.listAccounts(username, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
     public ServerState deposit(String username, String password, String phoneNumberEmisor, String phoneNumberReceptor, Double money) {
         try {
             return dbDAO.deposit(username, password, phoneNumberEmisor, phoneNumberReceptor, money);

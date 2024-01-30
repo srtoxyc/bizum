@@ -99,5 +99,7 @@ public interface DBDAO {
 
     String getAccount(String username, String password, String phoneNumber);
 
+    String listAccounts(String username, String password);
+
     ServerState deposit(String username, String password, String phoneNumberEmisor, String phoneNumberReceptor, Double money);
 }

@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import org.toxyc.bizum.model.entities.Account;
@@ -409,6 +411,7 @@ public class MySQLDAO implements DBDAO {
     public String getAccount(String username, String password, String phoneNumber) {
         try {
             if(this.checkLogin(username, password)) {
+                this.connect();
                 final String QUERY_ACCOUNT = String.format("SELECT Account.accountNumber, Account.money FROM Account, Telefono WHERE Account.nTelefono = Telefono.nTelefono AND Account.nTelefono = \"%s\" AND Telefono.id_user = ?", phoneNumber, this.getUser(username).getId());
 
                 ResultSet rs = this.executeQuery(QUERY_ACCOUNT);
@@ -419,6 +422,37 @@ public class MySQLDAO implements DBDAO {
                 }
 
                 return account.toString();
+            } else {
+                return null;
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            this.disconnect();
+        } 
+    }
+
+    @Override
+    public String listAccounts(String username, String password) {
+        try {
+            if(this.checkLogin(username, password)) {
+                this.connect();
+                final String QUERY_ACCOUNT  = String.format("SELECT Account.`accountNumber` AS 'accountNumber', Account.nTelefono AS 'phoneNumber' FROM `Account`, `Telefono`, `User` WHERE Account.`nTelefono` = Telefono.`nTelefono` AND Telefono.id_user = User.id AND User.id = %d", this.getUser(username).getId());
+
+                ResultSet rs                = this.executeQuery(QUERY_ACCOUNT);
+                List<Account> accounts      = new ArrayList<Account>();
+                String accountsStr          = "";
+
+                while(rs.next()) {
+                    accounts.add(new Account(rs.getString("accountNumber"), 0.0, rs.getString("phoneNumber")));
+                }
+
+                for(Account account : accounts) {
+                    accountsStr += account.toStringStrict() + ",";
+                }
+
+                return accountsStr.substring(0, accountsStr.lastIndexOf(','));
             } else {
                 return null;
             }

@@ -104,6 +104,14 @@ public class Routing {
         return appController.getAccount(username, password, phoneNumber);
 	}
 
+    @GetMapping("/account/list")
+	public String listAccounts(
+        @RequestParam(value = "username", defaultValue = "") String username,
+        @RequestParam(value = "password", defaultValue = "") String password
+    ) {
+        return appController.listAccounts(username, password);
+	}
+
     @GetMapping("/deposit")
     public Integer deposit(
         @RequestParam(value = "username", defaultValue = "") String username,

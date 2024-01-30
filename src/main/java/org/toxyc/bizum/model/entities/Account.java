@@ -39,6 +39,13 @@ public class Account implements Parseable {
         return this.toJSON();
     }
 
+    public String toStringStrict() {
+        return "{" +
+                "\"accountNum\":\"" + accountNum + '\"' +
+                ", \"phoneNumber\":\"" + phoneNumber + '\"' +
+                '}';
+    }
+
     @Override
     public String toJSON() {
         return "{" +

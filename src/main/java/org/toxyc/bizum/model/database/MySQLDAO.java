@@ -405,7 +405,7 @@ public class MySQLDAO implements DBDAO {
         } else {
             return ServerState.INVALID_LOGIN;
         }
-    }    
+    }
     
     @Override
     public String getAccount(String username, String password, String phoneNumber) {
@@ -452,7 +452,7 @@ public class MySQLDAO implements DBDAO {
                     accountsStr += account.toStringStrict() + ",";
                 }
 
-                return accountsStr.substring(0, accountsStr.lastIndexOf(','));
+                return String.format("{\"accounts\": [%s]}", accountsStr.substring(0, accountsStr.lastIndexOf(',')));
             } else {
                 return null;
             }

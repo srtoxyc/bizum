@@ -104,10 +104,9 @@ public class MySQLDAO implements DBDAO {
      * @throws SQLException
      * @author <a href="https://toxyc.dev">Iván Vicente Morales</a>
      */
-    private void executeUpdate(String sql) throws SQLException {
+    private int executeUpdate(String sql) throws SQLException {
         PreparedStatement ps = conn.prepareStatement(sql);
-        ps.executeUpdate();
-        ps.close();
+        return ps.executeUpdate();
     }
 
     /**
@@ -412,7 +411,7 @@ public class MySQLDAO implements DBDAO {
         try {
             if(this.checkLogin(username, password)) {
                 this.connect();
-                final String QUERY_ACCOUNT = String.format("SELECT Account.accountNumber, Account.money FROM Account, Telefono WHERE Account.nTelefono = Telefono.nTelefono AND Account.nTelefono = \"%s\" AND Telefono.id_user = ?", phoneNumber, this.getUser(username).getId());
+                final String QUERY_ACCOUNT = String.format("SELECT Account.accountNumber, Account.money FROM Account, Telefono WHERE Account.nTelefono = Telefono.nTelefono AND Account.nTelefono = \"%s\" AND Telefono.id_user = %d", phoneNumber, this.getUser(username).getId());
 
                 ResultSet rs = this.executeQuery(QUERY_ACCOUNT);
                 Account account = null;
@@ -464,27 +463,66 @@ public class MySQLDAO implements DBDAO {
         } 
     }
 
-    @Override
-    public ServerState deposit(String username, String password, String phoneNumberEmisor, String phoneNumberReceptor, Double money) {
-        final String QUERY_UPDATE_EMISOR    = String.format(Locale.US, "UPDATE Account SET money = money - %.2f WHERE nTelefono = \"%s\"", money, phoneNumberEmisor);
-        final String QUERY_UPDATE_RECEPTOR  = String.format(Locale.US, "UPDATE Account SET money = money + %.2f WHERE nTelefono = \"%s\"", money, phoneNumberReceptor);
+@Override
+public ServerState deposit(String username, String password, String phoneNumberEmisor, String phoneNumberReceptor, Double money) {
+    final String QUERY_UPDATE_EMISOR = String.format(Locale.US, "UPDATE Account SET money = money - %.2f WHERE nTelefono = \"%s\"", money, phoneNumberEmisor);
+    final String QUERY_UPDATE_RECEPTOR = String.format(Locale.US, "UPDATE Account SET money = money + %.2f WHERE nTelefono = \"%s\"", money, phoneNumberReceptor);
 
-        if(this.checkLogin(username, password)) {
-            this.connect();
+    if (this.checkLogin(username, password)) {
+        this.connect();
 
-            try {
-                executeUpdate(QUERY_UPDATE_EMISOR);
-                executeUpdate(QUERY_UPDATE_RECEPTOR);
-                return ServerState.SUCCESS;
-            } catch(SQLException e) {
-                e.printStackTrace();
-                return ServerState.DATABASE_ERROR;
-            } finally {
-                this.disconnect();
+        try {
+            this.conn.setAutoCommit(false);
+
+            if (executeUpdate(QUERY_UPDATE_RECEPTOR) == 0) {
+                this.conn.rollback();
+                return ServerState.INVALID_RECEPTOR;
             }
-        } else {
+
+            if (executeUpdate(QUERY_UPDATE_EMISOR) == 0) {
+                this.conn.rollback();
+                return ServerState.INVALID_EMISOR;
+            }
+
+            this.conn.commit();
+            return ServerState.SUCCESS;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return ServerState.DATABASE_ERROR;
+        } finally {
+            try {
+                this.conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             this.disconnect();
-            return ServerState.INVALID_LOGIN;
         }
+    } else {
+        return ServerState.INVALID_LOGIN;
     }
+}
+
+    // @Override
+    // public ServerState deposit(String username, String password, String phoneNumberEmisor, String phoneNumberReceptor, Double money) {
+    //     final String QUERY_UPDATE_EMISOR    = String.format(Locale.US, "UPDATE Account SET money = money - %.2f WHERE nTelefono = \"%s\"", money, phoneNumberEmisor);
+    //     final String QUERY_UPDATE_RECEPTOR  = String.format(Locale.US, "UPDATE Account SET money = money + %.2f WHERE nTelefono = \"%s\"", money, phoneNumberReceptor);
+
+    //     if(this.checkLogin(username, password)) {
+    //         this.connect();
+
+    //         try {
+    //             executeUpdate(QUERY_UPDATE_EMISOR);
+    //             executeUpdate(QUERY_UPDATE_RECEPTOR);
+    //             return ServerState.SUCCESS;
+    //         } catch(SQLException e) {
+    //             e.printStackTrace();
+    //             return ServerState.DATABASE_ERROR;
+    //         } finally {
+    //             this.disconnect();
+    //         }
+    //     } else {
+    //         this.disconnect();
+    //         return ServerState.INVALID_LOGIN;
+    //     }
+    // }
 }

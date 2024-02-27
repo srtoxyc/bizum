@@ -11,6 +11,7 @@ import java.util.Locale;
 
 import org.toxyc.bizum.model.entities.Account;
 import org.toxyc.bizum.model.entities.Email;
+import org.toxyc.bizum.model.entities.Phone;
 import org.toxyc.bizum.model.entities.ServerState;
 import org.toxyc.bizum.model.entities.User;
 import org.toxyc.bizum.model.util.ByteHexConverter;
@@ -139,7 +140,7 @@ public class MySQLDAO implements DBDAO {
                 ResultSet rsPhoneNumbers        = ps.executeQuery();
     
                 while(rsPhoneNumbers.next()) {
-                    user.addPhoneNumber(rsPhoneNumbers.getString("nTelefono"));
+                    user.addPhoneNumber(new Phone(rsPhoneNumbers.getString("nTelefono")));
                 }
             }
             
@@ -179,7 +180,7 @@ public class MySQLDAO implements DBDAO {
                 ResultSet rsPhoneNumbers        = ps.executeQuery();
     
                 while(rsPhoneNumbers.next()) {
-                    user.addPhoneNumber(rsPhoneNumbers.getString("nTelefono"));
+                    user.addPhoneNumber(new Phone(rsPhoneNumbers.getString("nTelefono")));
                 }
             }
 

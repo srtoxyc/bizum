@@ -2,6 +2,9 @@ package org.toxyc.bizum.model.entities;
 
 import java.util.StringTokenizer;
 
+import jakarta.persistence.Embeddable;
+
+@Embeddable
 public class Email implements Parseable {
     public final static String EMAIL_REGEX   = "^[A-Za-z0-9+_.-]+@(.+)$";
     public final static String EMAIL_DELIM   = "@";

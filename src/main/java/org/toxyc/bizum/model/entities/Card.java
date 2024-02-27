@@ -1,10 +1,26 @@
 package org.toxyc.bizum.model.entities;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "Card")
 public class Card implements Parseable {
+    @Id
     private Integer numCard;
+    @Column
     private String name;
+    @Column
     private Integer cvv;
+    @Column
     private String expirationDate;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "accountNum")
     private Account account;
     
     public Card(Integer numCard, String name, Integer cvv, String expirationDate, Account account) {
